@@ -66,11 +66,13 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\2dController.cs" />
     <Compile Include="Assets\Scripts\InvLayerManageer.cs" />
+    <Compile Include="Assets\Scripts\Item.cs" />
     <Compile Include="Assets\Scripts\dontDestroy.cs" />
     <Compile Include="Assets\Scripts\followPlayer.cs" />
+    <Compile Include="Assets\Scripts\nameObject.cs" />
     <Compile Include="Assets\Scripts\player.cs" />
     <Compile Include="Assets\Scripts\playerMovement.cs" />
-    <None Include="Assets\BayatGames\Free Platform Game Assets\Readme.txt" />
+    <Compile Include="Assets\Scripts\playerName.cs" />
     <Reference Include="UnityEngine">
       <HintPath>D:/UnityEditor/2019.4.23f1c1/Editor/Data/Managed/UnityEngine/UnityEngine.dll</HintPath>
     </Reference>
