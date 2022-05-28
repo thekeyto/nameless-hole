@@ -5,17 +5,13 @@ using UnityEngine;
 public class player : MonoBehaviour
 {
     [SerializeField] private float m_JumpForce = 400f;                          // Amount of force added when the player jumps.
-    [Range(0, 1)] [SerializeField] private float m_CrouchSpeed = .36f;          // Amount of maxSpeed applied to crouching movement. 1 = 100%
-    [Range(0, .3f)] [SerializeField] private float m_MovementSmoothing = .05f;  // How much to smooth out the movement
+     [Range(0, .3f)] [SerializeField] private float m_MovementSmoothing = .05f;  // How much to smooth out the movement
     [SerializeField] private bool m_AirControl = false;                         // Whether or not a player can steer while jumping;
     [SerializeField] private LayerMask m_WhatIsGround;                          // A mask determining what is ground to the character
     [SerializeField] private Transform m_GroundCheck;                           // A position marking where to check if the player is grounded.
-    [SerializeField] private Transform m_CeilingCheck;                          // A position marking where to check for ceilings
-    [SerializeField] private Collider m_CrouchDisableCollider;                // A collider that will be disabled when crouching
 
-    const float k_GroundedRadius = .2f; // Radius of the overlap circle to determine if grounded
+    public float k_GroundedRadius = .2f; // Radius of the overlap circle to determine if grounded
     private bool m_Grounded;            // Whether or not the player is grounded.
-    const float k_CeilingRadius = .2f; // Radius of the overlap circle to determine if the player can stand up
     private Rigidbody m_Rigidbody;
     private bool m_FacingRight = true;  // For determining which way the player is currently facing.
     private Vector3 m_Velocity = Vector3.zero;
@@ -23,12 +19,15 @@ public class player : MonoBehaviour
     // Start is called before the first frame update
     public int playerSpeed;
     public int jumpSpeed;
+    public float gravity;
 
 
     bool ifGround;
     Rigidbody thisRigid;
     void Start()
     {
+        Physics.gravity *= gravity;
+        ifGround = false;
         thisRigid = GetComponent<Rigidbody>();
     }
 
@@ -38,21 +37,23 @@ public class player : MonoBehaviour
     {
         float h = Input.GetAxis("Horizontal");
         flip(h);
+        Vector3 targetVelocity = new Vector3(h * 10f, thisRigid.velocity.y,thisRigid.velocity.z);
+        // And then smoothing it out and applying it to the character
+        thisRigid.velocity = Vector3.SmoothDamp(thisRigid.velocity, targetVelocity, ref m_Velocity, m_MovementSmoothing);
 
-        
-    }
 
-    bool isGround()
-    {
+        if (Input.GetAxis("Jump")!=0&&ifGround)
+        {
+            thisRigid.velocity = new Vector3(thisRigid.velocity.x, jumpSpeed, thisRigid.velocity.y);
+        }
 
-        return false;
     }
 
     void flip(float h)
     {
         if (transform.localScale.y * h < 0)
         {
-            transform.localScale.x *= -1; 
+            transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, transform.localScale.z);
         }
     }
 
@@ -78,6 +79,6 @@ public class player : MonoBehaviour
 
     void Update()
     {
-        
+        playerMove();
     }
 }
